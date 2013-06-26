@@ -1,5 +1,5 @@
 {
-  "name": "reAddComments",
+  "name": "re-add-comments",
   "version": "0.1.0",
   "description": "re-add comments to generated files from their source files via sourcemap",
   "repository": {
