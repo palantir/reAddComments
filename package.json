@@ -1,0 +1,27 @@
+{
+  "name": "reAddComments",
+  "version": "0.1.0",
+  "description": "re-add comments to generated files from their source files via sourcemap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/palantir/reAddComments.git"
+  },
+  "main": "lib/reAddComments.js",
+  "bin": {
+    "reAddComments": "bin/command.js"
+  },
+  "dependencies": {
+    "underscore": "~1.4.4",
+    "source-map": "~0.1.24"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "source-map",
+    "coffeescript"
+  ],
+  "author": "Palantir Technologies",
+  "license": "Apache-2"
+}
