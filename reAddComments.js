@@ -37,18 +37,18 @@ function reAddWithMap(mappath) {
 
 //TODO: ignore comments in block comments
 function addCommentsTo(generatedLines, sourceLines, sourcePath) {
-  for (var csLineNum = 0; csLineNum < sourceLines.length; csLineNum++) {
-    var csline = sourceLines[csLineNum];
-    var comment_match = csline.match(/#(|#|#[^#].*|[^#{].*)$/);
+  for (var srcLineNum = 0; srcLineNum < sourceLines.length; srcLineNum++) {
+    var srcLine = sourceLines[srcLineNum];
+    var comment_match = srcLine.match(/#(|#|#[^#].*|[^#{].*)$/);
 
     if (comment_match === null) continue;
     var comment = comment_match[1];
     var comment_start = comment_match.index;
-    var commentIsOnOwnLine = !!csline.match(/^\s*#(|#|#[^#].*|[^#{].*)/);
+    var commentIsOnOwnLine = !!srcLine.match(/^\s*#(|#|#[^#].*|[^#{].*)/);
 
     var genLine = map.generatedPositionFor({
       source: sourcePath,
-      line: csLineNum + 1,         // file lines are 1-indexed
+      line: srcLineNum + 1,         // file lines are 1-indexed
       column: comment_start + 1    // file columns are 1-indexed
     }).line - 1;                   // file lines are 1-indexed
 
