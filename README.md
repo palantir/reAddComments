@@ -12,7 +12,7 @@ reAddComments lib/*.map
 
 reAddComments is only as accurate as the sourcemap allows it to be, so it does a good job most of the time, but does occassionally misplace comments.  If you are using it to migrate a code base away from CoffeeScript, you will probably want to look through the files to make sure the comments are in the right place and move the few that wrong.
 
-Also, inline comments that start with `#{` are currently ignored.
+Comments that start with `#{` are ignored.
 
 
 ## Release History
