@@ -10,9 +10,9 @@ var sourceMap = require('source-map'),
 //TODO: rename code to be more consistant
 
 process.argv.slice(2).forEach(function(mapfile){
-  commentedjs = reAddWithMap(mapfile);
-  console.log(commentedjs);
-  //fs.writeFileSync(jspath, commentedjs);
+  var commented = reAddWithMap(mapfile);
+  console.log(commented.code);
+  //fs.writeFileSync(commented.generatedFile, commented.code);
 });
 
 function reAddWithMap(mappath) {
@@ -20,18 +20,18 @@ function reAddWithMap(mappath) {
       mapdict = JSON.parse(mapfile),
       map = new sourceMap.SourceMapConsumer(mapdict);
 
-  var jsdir = path.dirname(mappath),
-      jspath = path.join(jsdir, mapdict.file),
-      jslines = fs.readFileSync(jspath, 'utf8').split('\n');
-      srcroot = path.resolve(jsdir, mapdict.sourceRoot);
+  var genDir = path.dirname(mappath),
+      genPath = path.join(genDir, mapdict.file),
+      genLines = fs.readFileSync(genPath, 'utf8').split('\n');
+      srcRoot = path.resolve(genDir, mapdict.sourceRoot);
 
   mapdict.sources.forEach(function(source){
-    var srcpath = path.resolve(srcroot, source);
-    var srclines = fs.readFileSync(srcpath, 'utf8').split('\n');
-    addCommentsTo(jslines, srclines, source);
+    var srcPath = path.resolve(srcRoot, source);
+    var srcLines = fs.readFileSync(srcPath, 'utf8').split('\n');
+    addCommentsTo(genLines, srcLines, source);
   });
 
-  return us.flatten(jslines).join('\n');
+  return {code: us.flatten(genLines).join('\n'), generatedFile: genPath};
 }
 
 
