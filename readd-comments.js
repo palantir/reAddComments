@@ -10,12 +10,12 @@ var sourceMap = require('source-map'),
 //TODO: rename code to be more consistant
 
 process.argv.slice(2).forEach(function(mapfile){
-  commentedjs = readdWithMap(mapfile);
+  commentedjs = reAddWithMap(mapfile);
   console.log(commentedjs);
   //fs.writeFileSync(jspath, commentedjs);
 });
 
-function readdWithMap(mappath) {
+function reAddWithMap(mappath) {
   var mapfile = fs.readFileSync(mappath, 'utf8');
       mapdict = JSON.parse(mapfile),
       map = new sourceMap.SourceMapConsumer(mapdict);
@@ -34,33 +34,35 @@ function readdWithMap(mappath) {
   return us.flatten(jslines).join('\n');
 }
 
-var comment_regex = /#(|[^{#].*|#[^#].*)$/
 
-//TODO: find if comments are on their own line, if so, put them on their own line
-//TODO: ignore string interpolations
 //TODO: ignore comments in block comments
 function addCommentsTo(generatedLines, sourceLines, sourcePath) {
   for (var csLineNum = 0; csLineNum < sourceLines.length; csLineNum++) {
     var csline = sourceLines[csLineNum];
-    var comment_start = csline.indexOf('#');
+    var comment_match = csline.match(/#(|#|#[^#].*|[^#{].*)$/);
 
-    if (comment_start === -1) continue;
-    var comment = csline.slice(comment_start + 1);
+    if (comment_match === null) continue;
+    var comment = comment_match[1];
+    var comment_start = comment_match.index;
+    var commentIsOnOwnLine = !!csline.match(/^\s*#(|#|#[^#].*|[^#{].*)/);
 
-    //disable multiline comments -- coffee hanldes them
-    if (comment.slice(0,2) === '##') continue;
-
-    var genPosition = map.generatedPositionFor({
+    var genLine = map.generatedPositionFor({
       source: sourcePath,
       line: csLineNum + 1,         // file lines are 1-indexed
       column: comment_start + 1    // file columns are 1-indexed
-    });
-    var genLine = generatedLines[genPosition.line - 1];
-    if (!us.isArray(genLine)) {
-      generatedLines[genPosition.line - 1] = [genLine + '  //' + comment];
+    }).line - 1;                   // file lines are 1-indexed
+
+    var firstCommentOnLine = false;
+    if (!us.isArray(generatedLines[genLine])) {
+      firstCommentOnLine = true;
+      generatedLines[genLine] = [generatedLines[genLine]];
+    }
+
+    if (firstCommentOnLine && !commentIsOnOwnLine) {
+      generatedLines[genLine] += '  //' + comment;
     } else {
-      var indent = genLine[0].match(/^(\s*)/)[1];
-      generatedLines[genPosition.line - 1].push(indent + '//'+ comment);
+      var indent = generatedLines[genLine][0].match(/^(\s*)/)[1];
+      generatedLines[genLine].push(indent + '//'+ comment);
     }
   }
 }
