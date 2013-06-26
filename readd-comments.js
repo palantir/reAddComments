@@ -9,29 +9,30 @@ var sourceMap = require('source-map'),
 //TODO: put this in a function
 //TODO: rename code to be more consistant
 
-var mappath = process.argv[2],
-    mapfile = fs.readFileSync(mappath, 'utf8');
-    mapdict = JSON.parse(mapfile),
-    map = new sourceMap.SourceMapConsumer(mapdict);
+process.argv.slice(2).forEach(function(mapfile){
+  commentedjs = readdWithMap(mapfile);
+  console.log(commentedjs);
+  //fs.writeFileSync(jspath, commentedjs);
+});
 
-var jsdir = path.dirname(mappath),
-    jspath = path.join(jsdir, mapdict.file),
-    jslines = fs.readFileSync(jspath, 'utf8').split('\n');
-    srcroot = path.resolve(jsdir, mapdict.sourceRoot);
+function readdWithMap(mappath) {
+  var mapfile = fs.readFileSync(mappath, 'utf8');
+      mapdict = JSON.parse(mapfile),
+      map = new sourceMap.SourceMapConsumer(mapdict);
 
-for (var sourceFileIndex = 0; sourceFileIndex < mapdict.sources.length; sourceFileIndex++) {
-  var source = mapdict.sources[sourceFileIndex];
-  var cspath = path.resolve(srcroot, source),
-      csfile = fs.readFileSync(cspath, 'utf8')
-      cslines = csfile.split('\n');
-  console.log(cspath);
-  addCommentsTo(jslines, cslines, source);
+  var jsdir = path.dirname(mappath),
+      jspath = path.join(jsdir, mapdict.file),
+      jslines = fs.readFileSync(jspath, 'utf8').split('\n');
+      srcroot = path.resolve(jsdir, mapdict.sourceRoot);
+
+  mapdict.sources.forEach(function(source){
+    var srcpath = path.resolve(srcroot, source);
+    var srclines = fs.readFileSync(srcpath, 'utf8').split('\n');
+    addCommentsTo(jslines, srclines, source);
+  });
+
+  return us.flatten(jslines).join('\n');
 }
-
-var commentedjs = us.flatten(jslines).join('\n');
-console.log(commentedjs);
-//fs.writeFileSync(jspath, commentedjs);
-
 
 var comment_regex = /#(|[^{#].*|#[^#].*)$/
 
