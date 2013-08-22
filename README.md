@@ -4,15 +4,21 @@
 
 ## Getting Started
 
-reAddComments a sourcemap (.map) file, looks at the generated JavaScript file and the CoffeeScript source file(s) it's associated with, and adds comments from the sources to the generated file.  If multiple .map are passed in one invocation, reAddComments will process each one individually.  Common usage may be
+**reAddComments** takes a sourcemap (.map) file, looks at the generated JavaScript file and the CoffeeScript source file(s) it's associated with, and adds comments from the sources to the generated file.
 
-```bash
-reAddComments lib/*.map
-```
+If multiple .map are passed in one invocation, **reAddComments** will process each one individually.  Common usage may be `reAddComments lib/*.map`.
 
-reAddComments is only as accurate as the sourcemap allows it to be, so it does a good job most of the time, but does occassionally misplace comments.  If you are using it to migrate a code base away from CoffeeScript, you will probably want to look through the files to make sure the comments are in the right place and move the few that wrong.
+**reAddComments** is only as accurate as the sourcemaps it's given, so it occassionally misplaces comments.  If you are using it to migrate a code base away from CoffeeScript, you should manually review the altered files.
 
-Comments that start with `#{` are ignored.
+
+## As A Library
+
+**reAddComments** exports a single function,
+
+###reAddComments(generatedCode: string, sourceCode: string, mapdict: {})
+The mapdict parameter should be a json object equivalent to a .map file between the
+generatedCode and the sourceCode.  The actual filenames/sourceRoot defined in the mapdict
+is ignored, as the map is assumed to be between the generatedCode and sourceCode arguments.
 
 
 ## Release History

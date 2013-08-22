@@ -1,12 +1,12 @@
 {
   "name": "re-add-comments",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "re-add comments to generated files from their source files via sourcemap",
   "repository": {
     "type": "git",
     "url": "https://github.com/palantir/reAddComments.git"
   },
-  "main": "lib/reAddComments.js",
+  "main": "lib/main.js",
   "bin": {
     "reAddComments": "bin/command.js"
   },
